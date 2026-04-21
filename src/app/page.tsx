@@ -297,7 +297,7 @@ export default function Home() {
             </div>
             <button className="scroller-arrow down" onClick={() => setWindowStart(s => Math.min(dates.length - VISIBLE, s + 1))} disabled={!canDown}>∨</button>
           </div>
-          <MiniCalendar activeDate={activeDate} onSelectDate={setActiveDate} />
+          <MiniCalendar activeDate={activeDate} onSelectDate={setActiveDate} posts={posts} />
         </aside>
 
         {/* CENTER */}
@@ -475,6 +475,7 @@ export default function Home() {
               <MiniCalendar
                 activeDate={activeDate}
                 onSelectDate={(d) => { setActiveDate(d); setShowMobileCal(false); }}
+                posts={posts}
               />
             </div>
             <div style={{ textAlign: 'center', marginTop: 30, fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -488,7 +489,8 @@ export default function Home() {
 }
 
 /* ── Mini Calendar ─── */
-const MiniCalendar = ({ activeDate, onSelectDate }: { activeDate: string; onSelectDate: (d: string) => void }) => {
+const MiniCalendar = ({ activeDate, onSelectDate, posts }: { activeDate: string; onSelectDate: (d: string) => void; posts: any[] }) => {
+  const datesWithPosts = new Set(posts.map(p => p.date));
   const d = new Date(activeDate);
   const year = d.getFullYear();
   const month = d.getMonth();
@@ -507,6 +509,7 @@ const MiniCalendar = ({ activeDate, onSelectDate }: { activeDate: string; onSele
         onClick={() => onSelectDate(dateStr)}
       >
         {i}
+        {datesWithPosts.has(dateStr) && <div className="cal-dot" />}
       </div>
     );
   }
