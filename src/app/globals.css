@@ -1663,17 +1663,16 @@ body {
   }
 
   .cal-dot {
-    width: 3.5px;
-    height: 3.5px;
-    background: var(--blue);
-    border-radius: 50%;
+    width: 14px;
+    height: 1px;
+    background: #00467f;
     position: absolute;
-    bottom: 0px;
+    bottom: 4px;
   }
 
   .calendar-modal-content .cal-day.active .cal-dot {
     background: white;
-    bottom: 4px;
+    bottom: 6px;
   }
 
   .date-scroller {
@@ -1698,10 +1697,10 @@ body {
   }
 
   .page-date-title em {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #314b67;
-    margin-left: 6px;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    margin-left: 2px;
     font-style: normal;
   }
 

@@ -316,7 +316,7 @@ export default function Home() {
           <div className="content-scroll">
             {titleParts && (
               <h1 className="page-date-title">
-                {titleParts.month}월 {titleParts.date}일<em>, {titleParts.dow}</em>
+                {titleParts.month}월 {titleParts.date}일, <em>{titleParts.dow}</em>
               </h1>
             )}
 
