@@ -231,7 +231,7 @@ export default function Home() {
   };
 
   return (
-    <div className="app-root" onClick={() => setOpenMenu(null)}>
+    <div className="app-root">
 
       {/* HEADER */}
       <header className="top-header">
@@ -351,16 +351,16 @@ export default function Home() {
                           onClick={e => { e.stopPropagation(); setOpenMenu(openMenu === post.id ? null : post.id); }}
                         >⋮</button>
                         {openMenu === post.id && (
-                          <div className="edit-menu" onClick={e => e.stopPropagation()}>
-                            <button className="edit-menu-item" onClick={(e) => {
+                          <div className="edit-menu" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
+                            <button type="button" className="edit-menu-item" onMouseDown={(e) => {
                               e.stopPropagation();
-                              console.log('Edit clicked for post:', post.id);
+                              console.log('Edit Triggered:', post.id);
                               setEditPost(post);
                               setOpenMenu(null);
                             }}>수정</button>
-                            <button className="edit-menu-item danger" onClick={(e) => {
+                            <button type="button" className="edit-menu-item danger" onMouseDown={(e) => {
                               e.stopPropagation();
-                              console.log('Delete clicked for post:', post.id);
+                              console.log('Delete Triggered:', post.id);
                               deletePost(post.id);
                               setOpenMenu(null);
                             }}>삭제</button>
