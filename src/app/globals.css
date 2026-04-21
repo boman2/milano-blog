@@ -1602,21 +1602,59 @@ body {
     gap: 10px 0;
   }
 
-  .calendar-sheet .cal-header h3 {
-    font-size: 1.6rem;
-    font-weight: 800;
+  .calendar-sheet .cal-header {
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
     margin-bottom: 20px;
+    position: relative;
+  }
+
+  .calendar-sheet .cal-header h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-dark);
+  }
+
+  .calendar-sheet .cal-header div {
+    position: absolute;
+    right: 0;
+    bottom: -40px;
+    /* Moves arrows below header if needed, but official shows no arrows or hidden ones */
+    display: none !important;
+  }
+
+  .sheet-close {
+    top: 24px;
+    right: 20px;
+    font-weight: 300;
   }
 
   .calendar-sheet .cal-day {
-    font-size: 1.1rem;
-    font-weight: 600;
-    padding: 8px 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    padding: 10px 0;
     height: auto;
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #1a1a1a;
+  }
+
+  .calendar-sheet .cal-day.active {
+    background: #00467f;
+    /* Dark Olympic blue */
+    color: white;
+    border-radius: 50%;
+  }
+
+  .calendar-sheet .cal-weekday {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
   }
 
   .calendar-sheet .cal-day.active {
