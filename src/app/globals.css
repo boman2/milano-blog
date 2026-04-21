@@ -1567,27 +1567,29 @@ body {
     width: 100%;
     background: var(--white);
     border-radius: 20px 20px 0 0;
-    padding: 8px 12px 0px;
+    padding: 10px 16px 8px;
+    /* Compact padding */
     animation: slideUp 0.3s ease;
     position: relative;
-    max-height: 48vh;
+    max-height: 480px;
   }
 
   .sheet-handle {
-    width: 28px;
+    width: 44px;
     height: 4px;
-    background: #e5e7eb;
+    background: #e2e8f0;
     border-radius: 100px;
-    margin: 0 auto 2px;
+    margin: 0 auto 16px;
   }
 
   .sheet-close {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 26px;
+    /* Centered with title */
+    right: 20px;
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 2.2rem;
     line-height: 1;
     color: #1a1a1a;
     font-weight: 300;
@@ -1596,35 +1598,33 @@ body {
   }
 
   .calendar-modal-content .cal-header {
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 0px;
-    padding-top: 2px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2px;
   }
 
   .calendar-modal-content .cal-header h3 {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    /* Larger bold header */
+    font-weight: 800;
     margin: 0;
     color: #001b3a;
-    letter-spacing: -0.2px;
+    /* Official dark navy */
+    letter-spacing: -0.6px;
   }
 
   .calendar-modal-content .calendar-grid {
     gap: 0;
-    margin-top: 0;
-    padding-bottom: 2px;
+    margin-top: 14px;
+    padding-bottom: 12px;
   }
 
   .calendar-modal-content .cal-day {
-    font-size: 0.92rem;
-    font-weight: 400;
-    /* Removed bold as requested */
-    padding: 2px 0;
-    height: auto;
-    aspect-ratio: 1;
+    font-size: 1.05rem;
+    font-weight: 600;
+    /* Clean, bold-ish font */
+    height: 40px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #1a1a1a;
@@ -1633,40 +1633,47 @@ body {
 
   .calendar-modal-content .cal-day.active {
     background: #00467f;
+    /* Official blue */
     color: white;
     border-radius: 50%;
-    transform: scale(0.6);
-    font-weight: 600;
+    width: 36px;
+    height: 36px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: none;
   }
 
   .calendar-modal-content .cal-weekday {
-    font-size: 0.6rem;
+    font-size: 0.72rem;
     color: #aaaaaa;
     font-weight: 500;
-    padding-bottom: 2px;
+    padding-bottom: 8px;
+    text-align: center;
   }
 
   .calendar-footer {
     margin-top: 2px;
-    padding-top: 4px;
-    border-top: 1px solid #f9f9f9;
+    padding-top: 14px;
+    border-top: 1px solid #f1f1f1;
     text-align: center;
-    font-size: 0.6rem;
-    color: #999999;
+    font-size: 0.68rem;
+    color: #888888;
   }
 
   .cal-dot {
-    width: 2.5px;
-    height: 2.5px;
+    width: 3.5px;
+    height: 3.5px;
     background: var(--blue);
     border-radius: 50%;
     position: absolute;
-    bottom: 2px;
+    bottom: 0px;
   }
 
   .calendar-modal-content .cal-day.active .cal-dot {
     background: white;
-    bottom: 6px;
+    bottom: 4px;
   }
 
   .date-scroller {
@@ -1683,14 +1690,19 @@ body {
   }
 
   .page-date-title {
-    font-size: 1.6rem;
-    /* Increased from 1.4rem */
+    font-size: 1.75rem;
+    /* Larger bold hero title */
     font-weight: 800;
     margin-bottom: 12px;
+    color: #001b3a;
   }
 
   .page-date-title em {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #314b67;
+    margin-left: 6px;
+    font-style: normal;
   }
 
   .post-card {
