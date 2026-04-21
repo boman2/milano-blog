@@ -214,8 +214,11 @@ export default function Home() {
     setTodoInput('');
   };
 
-  const toggleTodo = (id: string, done: boolean) =>
-    updateDoc(doc(db, 'blog_todos', id), { done: !done, ...(!done ? { category: '완료' } : {}) }).catch(console.error);
+  const toggleTodo = (id: string, done: boolean) => {
+    const nextDone = !done;
+    const nextCat = nextDone ? '완료' : '진행중';
+    updateDoc(doc(db, 'blog_todos', id), { done: nextDone, category: nextCat }).catch(console.error);
+  };
 
   const deletePost = async (id: string) => {
     console.log('Attempting to delete post:', id);
@@ -231,7 +234,7 @@ export default function Home() {
   };
 
   return (
-    <div className="app-root">
+    <div className="app-root" onClick={() => setOpenMenu(null)}>
 
       {/* HEADER */}
       <header className="top-header">
@@ -633,21 +636,15 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    console.log('Save started. isEdit:', isEdit);
     setSaving(true);
     try {
-      // Upload images
       const newUrls: string[] = [];
       for (let i = 0; i < files.length; i++) {
-        console.log(`Processing file ${i + 1}/${files.length}`);
         const blob = await toWebP(files[i]);
-        console.log('Converted to WebP');
         const url = await uploadImage(blob);
-        console.log('Uploaded to storage:', url);
         newUrls.push(url);
       }
       const allImages = [...existingImgs, ...newUrls];
-      console.log('Total images to save:', allImages.length);
 
       const data = {
         title: title.trim(), subtitle: subtitle.trim(),
@@ -656,18 +653,14 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
       };
 
       if (isEdit) {
-        console.log('Updating document:', post.id);
         await updateDoc(doc(db, 'blog_posts', post.id), data);
-        console.log('Update successful');
       } else {
-        console.log('Creating new document');
         await addDoc(collection(db, 'blog_posts'), { ...data, createdAt: serverTimestamp() });
-        console.log('Create successful');
       }
       onClose();
     } catch (err) {
-      console.error('Save error detailed:', err);
-      alert('저장에 실패했습니다. 콘솔 에러를 확인해 주세요.');
+      console.error(err);
+      alert('저장에 실패했습니다. 다시 시도해 주세요.');
     } finally {
       setSaving(false);
     }
