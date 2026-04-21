@@ -343,9 +343,9 @@ export default function Home() {
                           onClick={e => { e.stopPropagation(); setOpenMenu(openMenu === post.id ? null : post.id); }}
                         >⋮</button>
                         {openMenu === post.id && (
-                          <div className="edit-menu">
-                            <button className="edit-menu-item" onClick={() => { setEditPost(post); setOpenMenu(null); }}>수정</button>
-                            <button className="edit-menu-item danger" onClick={() => { deletePost(post.id); setOpenMenu(null); }}>삭제</button>
+                          <div className="edit-menu" onClick={e => e.stopPropagation()}>
+                            <button className="edit-menu-item" onClick={(e) => { e.stopPropagation(); setEditPost(post); setOpenMenu(null); }}>수정</button>
+                            <button className="edit-menu-item danger" onClick={(e) => { e.stopPropagation(); deletePost(post.id); setOpenMenu(null); }}>삭제</button>
                           </div>
                         )}
                       </div>
@@ -589,7 +589,7 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
   const [tag, setTag] = useState<string>(post?.tag || 'gold');
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
-  const [existingImgs] = useState<string[]>(post?.images || []);
+  const [existingImgs, setExistingImgs] = useState<string[]>(post?.images || []);
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -607,6 +607,9 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
   const removeFile = (idx: number) => {
     setFiles(prev => prev.filter((_, i) => i !== idx));
     setPreviews(prev => prev.filter((_, i) => i !== idx));
+  };
+  const removeExisting = (idx: number) => {
+    setExistingImgs(prev => prev.filter((_, i) => i !== idx));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -693,10 +696,20 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
             </div>
             <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
               onChange={e => handleFiles(e.target.files)} />
-            {previews.length > 0 && (
+
+            {(existingImgs.length > 0 || previews.length > 0) && (
               <div className="img-preview-grid">
+                {/* Existing Images */}
+                {existingImgs.map((src, i) => (
+                  <div key={`ex-${i}`} className="img-preview-item">
+                    <img src={src} alt="" />
+                    <button className="img-remove" type="button" onClick={() => removeExisting(i)}>×</button>
+                    <span className="img-tag-old">기존</span>
+                  </div>
+                ))}
+                {/* New Previews */}
                 {previews.map((src, i) => (
-                  <div key={i} className="img-preview-item">
+                  <div key={`new-${i}`} className="img-preview-item">
                     <img src={src} alt="" />
                     <button className="img-remove" type="button" onClick={() => removeFile(i)}>×</button>
                   </div>
