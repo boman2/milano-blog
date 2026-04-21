@@ -525,7 +525,10 @@ const MiniCalendar = ({ activeDate, onSelectDate }: { activeDate: string; onSele
   );
 };
 
-/* ── Todo Panel (reused PC + mobile) ── */
+const TodoPanel = ({
+  activeTodos, doneTodos, todoInput, todoCat, todoPri, showAllDone,
+  setTodoInput, setTodoCat, setTodoPri, addTodo, toggleTodo, setShowAllDone,
+  byCategory, sorted
 }: any) => {
   return (
     <>
@@ -598,171 +601,172 @@ const MiniCalendar = ({ activeDate, onSelectDate }: { activeDate: string; onSele
       )}
     </>
   );
+};
 
-  /* ── Todo Item ─── */
-  function TodoItem({ t, onToggle }: { t: any; onToggle: (id: string, done: boolean) => void }) {
-    const catClass: Record<string, string> = { '기획중': 'planning', '진행중': 'doing', '완료': 'done-cat' };
-    return (
-      <div className={`todo-item${t.done ? ' done-item' : ''}`}>
-        <div className={`todo-radio${t.done ? ' checked' : ''}`} onClick={() => onToggle(t.id, t.done)} />
-        <div className="todo-text-wrap">
-          <div className={`todo-text${t.done ? ' striked' : ''}`}>{t.text}</div>
-          <div style={{ display: 'flex', gap: 4, marginTop: 3, flexWrap: 'wrap' }}>
-            <span className={`cat-badge ${catClass[t.category] || 'planning'}`}>{t.category}</span>
-            <span className={`pri-badge ${t.priority === '중요' ? 'high' : 'normal'}`}>{t.priority}</span>
-            <span className="todo-date">{t.createdAt ? (t.createdAt.toDate ? t.createdAt.toDate().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '') : ''}</span>
-          </div>
+/* ── Todo Item ─── */
+function TodoItem({ t, onToggle }: { t: any; onToggle: (id: string, done: boolean) => void }) {
+  const catClass: Record<string, string> = { '기획중': 'planning', '진행중': 'doing', '완료': 'done-cat' };
+  return (
+    <div className={`todo-item${t.done ? ' done-item' : ''}`}>
+      <div className={`todo-radio${t.done ? ' checked' : ''}`} onClick={() => onToggle(t.id, t.done)} />
+      <div className="todo-text-wrap">
+        <div className={`todo-text${t.done ? ' striked' : ''}`}>{t.text}</div>
+        <div style={{ display: 'flex', gap: 4, marginTop: 3, flexWrap: 'wrap' }}>
+          <span className={`cat-badge ${catClass[t.category] || 'planning'}`}>{t.category}</span>
+          <span className={`pri-badge ${t.priority === '중요' ? 'high' : 'normal'}`}>{t.priority}</span>
+          <span className="todo-date">{t.createdAt ? (t.createdAt.toDate ? t.createdAt.toDate().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '') : ''}</span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  /* ── Post Form Modal ─── */
-  function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post?: any; onClose: () => void }) {
-    const isEdit = !!post;
-    const [title, setTitle] = useState(post?.title || '');
-    const [subtitle, setSubtitle] = useState(post?.subtitle || '');
-    const [content, setContent] = useState(post?.content || '');
-    const [time, setTime] = useState(post?.time || '');
-    const [date, setDate] = useState(post?.date || activeDate);
-    const [tag, setTag] = useState<string>(post?.tag || 'gold');
-    const [files, setFiles] = useState<File[]>([]);
-    const [previews, setPreviews] = useState<string[]>([]);
-    const [existingImgs, setExistingImgs] = useState<string[]>(post?.images || []);
-    const [saving, setSaving] = useState(false);
-    const fileRef = useRef<HTMLInputElement>(null);
+/* ── Post Form Modal ─── */
+function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post?: any; onClose: () => void }) {
+  const isEdit = !!post;
+  const [title, setTitle] = useState(post?.title || '');
+  const [subtitle, setSubtitle] = useState(post?.subtitle || '');
+  const [content, setContent] = useState(post?.content || '');
+  const [time, setTime] = useState(post?.time || '');
+  const [date, setDate] = useState(post?.date || activeDate);
+  const [tag, setTag] = useState<string>(post?.tag || 'gold');
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [existingImgs, setExistingImgs] = useState<string[]>(post?.images || []);
+  const [saving, setSaving] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-    const handleFiles = (selected: FileList | null) => {
-      if (!selected) return;
-      const arr = Array.from(selected).filter(f => f.type.startsWith('image/'));
-      setFiles(prev => [...prev, ...arr]);
-      arr.forEach(f => {
-        const reader = new FileReader();
-        reader.onload = e => setPreviews(prev => [...prev, e.target!.result as string]);
-        reader.readAsDataURL(f);
-      });
-    };
+  const handleFiles = (selected: FileList | null) => {
+    if (!selected) return;
+    const arr = Array.from(selected).filter(f => f.type.startsWith('image/'));
+    setFiles(prev => [...prev, ...arr]);
+    arr.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = e => setPreviews(prev => [...prev, e.target!.result as string]);
+      reader.readAsDataURL(f);
+    });
+  };
 
-    const removeFile = (idx: number) => {
-      setFiles(prev => prev.filter((_, i) => i !== idx));
-      setPreviews(prev => prev.filter((_, i) => i !== idx));
-    };
-    const removeExisting = (idx: number) => {
-      setExistingImgs(prev => prev.filter((_, i) => i !== idx));
-    };
+  const removeFile = (idx: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== idx));
+    setPreviews(prev => prev.filter((_, i) => i !== idx));
+  };
+  const removeExisting = (idx: number) => {
+    setExistingImgs(prev => prev.filter((_, i) => i !== idx));
+  };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!title.trim()) return;
-      setSaving(true);
-      try {
-        const newUrls: string[] = [];
-        for (let i = 0; i < files.length; i++) {
-          const blob = await toWebP(files[i]);
-          const url = await uploadImage(blob);
-          newUrls.push(url);
-        }
-        const allImages = [...existingImgs, ...newUrls];
-
-        const data = {
-          title: title.trim(), subtitle: subtitle.trim(),
-          content: content.trim(), time: time.trim(),
-          date, tag, images: allImages,
-        };
-
-        if (isEdit) {
-          await updateDoc(doc(db, 'blog_posts', post.id), data);
-        } else {
-          await addDoc(collection(db, 'blog_posts'), { ...data, createdAt: serverTimestamp() });
-        }
-        onClose();
-      } catch (err) {
-        console.error(err);
-        alert('저장에 실패했습니다. 다시 시도해 주세요.');
-      } finally {
-        setSaving(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+    setSaving(true);
+    try {
+      const newUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const blob = await toWebP(files[i]);
+        const url = await uploadImage(blob);
+        newUrls.push(url);
       }
-    };
+      const allImages = [...existingImgs, ...newUrls];
 
-    return (
-      <div className="modal-backdrop" onClick={onClose}>
-        <div className="post-form-box" onClick={e => e.stopPropagation()}>
-          <button className="modal-close" onClick={onClose}>×</button>
-          <div className="form-title">{isEdit ? '글 수정' : '새 글 작성'}</div>
-          <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div className="form-group">
-                <label className="form-label">날짜</label>
-                <input type="date" className="form-input" value={date} onChange={e => setDate(e.target.value)} required />
-              </div>
-              <div className="form-group">
-                <label className="form-label">시간 (예: 16시 24분)</label>
-                <input type="text" className="form-input" value={time}
-                  onChange={e => setTime(formatTimeInput(e.target.value))}
-                  placeholder="1624 입력 시 자동 변환" maxLength={10} />
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">제목 *</label>
-              <input type="text" className="form-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="글 제목" required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">부제목</label>
-              <input type="text" className="form-input" value={subtitle} onChange={e => setSubtitle(e.target.value)} placeholder="한 줄 설명" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">내용</label>
-              <textarea className="form-textarea" value={content} onChange={e => setContent(e.target.value)} placeholder="본문 내용..." />
-            </div>
-            <div className="form-group">
-              <label className="form-label">태그</label>
-              <select className="form-select" value={tag} onChange={e => setTag(e.target.value)}>
-                <option value="gold">🧠 기억 — 소중한 기억</option>
-                <option value="silver">☀️ 일상 — 오늘의 일상</option>
-                <option value="bronze">💭 반성 — 되돌아보기</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">이미지 첨부 (자동 WebP 변환)</label>
-              <div className="img-upload-area" onClick={() => fileRef.current?.click()}>
-                <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-                  📎 클릭하여 이미지 선택 (여러 장 가능)
-                </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>
-                  JPG, PNG, HEIC → WebP로 자동 변환
-                </div>
-              </div>
-              <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
-                onChange={e => handleFiles(e.target.files)} />
+      const data = {
+        title: title.trim(), subtitle: subtitle.trim(),
+        content: content.trim(), time: time.trim(),
+        date, tag, images: allImages,
+      };
 
-              {(existingImgs.length > 0 || previews.length > 0) && (
-                <div className="img-preview-grid">
-                  {/* Existing Images */}
-                  {existingImgs.map((src, i) => (
-                    <div key={`ex-${i}`} className="img-preview-item">
-                      <img src={src} alt="" />
-                      <button className="img-remove" type="button" onClick={() => removeExisting(i)}>×</button>
-                      <span className="img-tag-old">기존</span>
-                    </div>
-                  ))}
-                  {/* New Previews */}
-                  {previews.map((src, i) => (
-                    <div key={`new-${i}`} className="img-preview-item">
-                      <img src={src} alt="" />
-                      <button className="img-remove" type="button" onClick={() => removeFile(i)}>×</button>
-                    </div>
-                  ))}
-                </div>
-              )}
+      if (isEdit) {
+        await updateDoc(doc(db, 'blog_posts', post.id), data);
+      } else {
+        await addDoc(collection(db, 'blog_posts'), { ...data, createdAt: serverTimestamp() });
+      }
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert('저장에 실패했습니다. 다시 시도해 주세요.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="post-form-box" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>×</button>
+        <div className="form-title">{isEdit ? '글 수정' : '새 글 작성'}</div>
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div className="form-group">
+              <label className="form-label">날짜</label>
+              <input type="date" className="form-input" value={date} onChange={e => setDate(e.target.value)} required />
             </div>
-            <div className="form-btns">
-              <button type="submit" className="submit-btn" disabled={saving}>
-                {saving ? '저장 중...' : isEdit ? '수정 완료' : '게시하기'}
-              </button>
-              <button type="button" className="cancel-btn" onClick={onClose}>취소</button>
+            <div className="form-group">
+              <label className="form-label">시간 (예: 16시 24분)</label>
+              <input type="text" className="form-input" value={time}
+                onChange={e => setTime(formatTimeInput(e.target.value))}
+                placeholder="1624 입력 시 자동 변환" maxLength={10} />
             </div>
-          </form>
-        </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">제목 *</label>
+            <input type="text" className="form-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="글 제목" required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">부제목</label>
+            <input type="text" className="form-input" value={subtitle} onChange={e => setSubtitle(e.target.value)} placeholder="한 줄 설명" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">내용</label>
+            <textarea className="form-textarea" value={content} onChange={e => setContent(e.target.value)} placeholder="본문 내용..." />
+          </div>
+          <div className="form-group">
+            <label className="form-label">태그</label>
+            <select className="form-select" value={tag} onChange={e => setTag(e.target.value)}>
+              <option value="gold">🧠 기억 — 소중한 기억</option>
+              <option value="silver">☀️ 일상 — 오늘의 일상</option>
+              <option value="bronze">💭 반성 — 되돌아보기</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">이미지 첨부 (자동 WebP 변환)</label>
+            <div className="img-upload-area" onClick={() => fileRef.current?.click()}>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                📎 클릭하여 이미지 선택 (여러 장 가능)
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>
+                JPG, PNG, HEIC → WebP로 자동 변환
+              </div>
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
+              onChange={e => handleFiles(e.target.files)} />
+
+            {(existingImgs.length > 0 || previews.length > 0) && (
+              <div className="img-preview-grid">
+                {/* Existing Images */}
+                {existingImgs.map((src, i) => (
+                  <div key={`ex-${i}`} className="img-preview-item">
+                    <img src={src} alt="" />
+                    <button className="img-remove" type="button" onClick={() => removeExisting(i)}>×</button>
+                    <span className="img-tag-old">기존</span>
+                  </div>
+                ))}
+                {/* New Previews */}
+                {previews.map((src, i) => (
+                  <div key={`new-${i}`} className="img-preview-item">
+                    <img src={src} alt="" />
+                    <button className="img-remove" type="button" onClick={() => removeFile(i)}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="form-btns">
+            <button type="submit" className="submit-btn" disabled={saving}>
+              {saving ? '저장 중...' : isEdit ? '수정 완료' : '게시하기'}
+            </button>
+            <button type="button" className="cancel-btn" onClick={onClose}>취소</button>
+          </div>
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
+}
