@@ -318,16 +318,19 @@ body {
 
 .date-item {
   width: 100%;
-  padding: 7px 6px;
+  padding: 10px 8px;
   text-align: center;
   border-radius: 20px;
   cursor: pointer;
   border: 1.5px solid transparent;
   transition: all 0.18s;
-  line-height: 1.25;
+  line-height: 1.4;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-muted);
 }
 
 .date-item:hover {
@@ -337,7 +340,22 @@ body {
 .date-item.active {
   background: var(--white);
   border-color: var(--blue);
+  color: var(--blue);
+  font-weight: 700;
   box-shadow: var(--shadow-sm);
+}
+
+.d-month {
+  display: none;
+  /* Hide month in scroller to match official view */
+}
+
+.d-day {
+  font-size: 1.05rem;
+}
+
+.d-dow {
+  font-size: 0.85rem;
 }
 
 .d-month {
@@ -1489,54 +1507,99 @@ body {
     grid-template-rows: auto 1fr;
   }
 
-  .date-scroller {
-    border-right: none;
+  /* ── Mobile Date Header ─── */
+  .mobile-date-header {
+    display: flex;
+    background: var(--white);
+    padding: 12px 14px;
     border-bottom: 1px solid var(--border);
-    flex-direction: row;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    gap: 8px;
     align-items: center;
-    padding: 8px 10px;
-    gap: 0;
-    overflow: hidden;
   }
 
-  .scroller-arrow {
-    width: 26px;
-    height: 34px;
-    font-size: 0.8rem;
-  }
-
-  .scroller-arrow.up {
-    transform: rotate(-90deg);
-  }
-
-  .scroller-arrow.down {
-    transform: rotate(90deg);
-  }
-
-  .scroller-window {
-    flex-direction: row;
-    gap: 4px;
+  .date-dropdown-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    flex: 1;
+    padding: 10px 16px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: var(--shadow-sm);
   }
 
-  .date-item {
-    flex: 1;
-    padding: 5px 4px;
-    border-radius: 12px;
-    min-width: 0;
-  }
-
-  .d-month {
-    font-size: 0.55rem;
-  }
-
-  .d-day {
+  .filter-btn {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 12px;
     font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
   }
 
-  .d-dow {
-    font-size: 0.58rem;
+  /* ── Calendar Modal ─── */
+  .calendar-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2000;
+    display: flex;
+    align-items: flex-end;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .calendar-sheet {
+    width: 100%;
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 16px 48px;
+    animation: slideUp 0.3s ease;
+    position: relative;
+  }
+
+  .sheet-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .date-scroller {
+    display: none;
   }
 
   .content-hero {

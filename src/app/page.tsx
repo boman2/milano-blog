@@ -33,10 +33,15 @@ const KR_DAYS_FULL = ['일요일', '월요일', '화요일', '수요일', '목�
 function generateDates() {
   const arr: { full: string; day: number; dow: string; month: number }[] = [];
   const today = new Date();
-  for (let i = -20; i <= 40; i++) {
+  for (let i = -30; i <= 60; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    arr.push({ full: d.toISOString().split('T')[0], day: d.getDate(), dow: KR_DAYS[d.getDay()], month: d.getMonth() + 1 });
+    arr.push({
+      full: d.toISOString().split('T')[0],
+      day: d.getDate(),
+      dow: KR_DAYS_FULL[d.getDay()],
+      month: d.getMonth() + 1
+    });
   }
   return arr;
 }
@@ -149,6 +154,7 @@ export default function Home() {
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [showTodoSheet, setShowTodoSheet] = useState(false);
   const [showAllDone, setShowAllDone] = useState(false);
+  const [showMobileCal, setShowMobileCal] = useState(false);
   const [todoInput, setTodoInput] = useState('');
   const [todoCat, setTodoCat] = useState<'기획중' | '진행중'>('기획중');
   const [todoPri, setTodoPri] = useState<'중요' | '보통'>('보통');
@@ -250,35 +256,30 @@ export default function Home() {
               {user.photoURL ? <img src={user.photoURL} alt="u" referrerPolicy="no-referrer" /> : (user.displayName?.[0] || '?').toUpperCase()}
             </div>
           ) : (
-            <button className="icon-btn" onClick={() => setShowLogin(true)} title="로그인"><IconUser /></button>
+            <button className="icon-btn" onClick={() => setShowLogin(true)} title="로그인" style={{ padding: '8px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            </button>
           )}
-          <button className="icon-btn" title="검색" onClick={() => router.push('/search')}><IconSearch /></button>
-          <button className="icon-btn" title="메뉴"><IconMenu /></button>
+          <button className="icon-btn" title="검색" onClick={() => router.push('/search')} style={{ padding: '8px' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          </button>
+          <button className="icon-btn" title="메뉴" style={{ padding: '8px' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16M4 6h16M4 18h16" /></svg>
+          </button>
         </div>
       </header>
 
       <div className="body-layout">
 
-        {/* LEFT — Date Scroller (PC: 세로 / Mobile: 가로) */}
+        {/* PC: LEFT — Date Scroller */}
         <aside className="date-scroller">
           <div className="scroller-and-arrows">
-            {/* UP 화살표 */}
-            <button
-              className="scroller-arrow up"
-              onClick={() => setWindowStart(s => Math.max(0, s - 1))}
-              disabled={!canUp}
-              aria-label="이전 날짜"
-            >
-              ∧
-            </button>
-
-            {/* 7개 날짜 윈도우 */}
+            <button className="scroller-arrow up" onClick={() => setWindowStart(s => Math.max(0, s - 1))} disabled={!canUp}>∧</button>
             <div className="scroller-window">
               {visibleDates.map((d, i) => {
                 const globalIdx = windowStart + i;
                 const isActive = d.full === activeDate;
                 const opacity = itemOpacity(i, Math.floor(VISIBLE / 2));
-                const showMonth = i === 0 || visibleDates[i - 1].month !== d.month;
                 return (
                   <div
                     key={d.full}
@@ -286,30 +287,29 @@ export default function Home() {
                     style={{ opacity: isActive ? 1 : opacity }}
                     onClick={() => selectDate(d.full, globalIdx)}
                   >
-                    {showMonth && <span className="d-month">{d.month}월</span>}
                     <span className="d-day">{d.day}</span>
                     <span className="d-dow">{d.dow}</span>
                   </div>
                 );
               })}
             </div>
-
-            {/* DOWN 화살표 */}
-            <button
-              className="scroller-arrow down"
-              onClick={() => setWindowStart(s => Math.min(dates.length - VISIBLE, s + 1))}
-              disabled={!canDown}
-              aria-label="다음 날짜"
-            >
-              ∨
-            </button>
+            <button className="scroller-arrow down" onClick={() => setWindowStart(s => Math.min(dates.length - VISIBLE, s + 1))} disabled={!canDown}>∨</button>
           </div>
-
           <MiniCalendar activeDate={activeDate} onSelectDate={setActiveDate} />
         </aside>
 
         {/* CENTER */}
         <main className="main-content">
+          <div className="mobile-date-header">
+            <button className="date-dropdown-btn" onClick={() => setShowMobileCal(true)}>
+              <span>{titleParts ? `${titleParts.month}월 ${titleParts.date}일` : '날짜 선택'}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <button className="filter-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" /></svg>
+              필터
+            </button>
+          </div>
           <div className="content-hero" />
           <div className="content-scroll">
             {titleParts && (
@@ -463,6 +463,24 @@ export default function Home() {
 
       {/* Edit Modal */}
       {editPost && <PostFormModal activeDate={activeDate} post={editPost} onClose={() => setEditPost(null)} />}
+
+      {/* Mobile Calendar Modal */}
+      {showMobileCal && (
+        <div className="calendar-modal" onClick={() => setShowMobileCal(false)}>
+          <div className="calendar-sheet" onClick={e => e.stopPropagation()}>
+            <button className="sheet-close" onClick={() => setShowMobileCal(false)}>×</button>
+            <div style={{ marginTop: 10 }}>
+              <MiniCalendar
+                activeDate={activeDate}
+                onSelectDate={(d) => { setActiveDate(d); setShowMobileCal(false); }}
+              />
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 30, fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              날짜는 접속 지역 시간대에 맞춰 표시됩니다.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
