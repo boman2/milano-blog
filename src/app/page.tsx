@@ -633,16 +633,21 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
+    console.log('Save started. isEdit:', isEdit);
     setSaving(true);
     try {
       // Upload images
       const newUrls: string[] = [];
-      for (const f of files) {
-        const blob = await toWebP(f);
+      for (let i = 0; i < files.length; i++) {
+        console.log(`Processing file ${i + 1}/${files.length}`);
+        const blob = await toWebP(files[i]);
+        console.log('Converted to WebP');
         const url = await uploadImage(blob);
+        console.log('Uploaded to storage:', url);
         newUrls.push(url);
       }
       const allImages = [...existingImgs, ...newUrls];
+      console.log('Total images to save:', allImages.length);
 
       const data = {
         title: title.trim(), subtitle: subtitle.trim(),
@@ -651,14 +656,18 @@ function PostFormModal({ activeDate, post, onClose }: { activeDate: string; post
       };
 
       if (isEdit) {
+        console.log('Updating document:', post.id);
         await updateDoc(doc(db, 'blog_posts', post.id), data);
+        console.log('Update successful');
       } else {
+        console.log('Creating new document');
         await addDoc(collection(db, 'blog_posts'), { ...data, createdAt: serverTimestamp() });
+        console.log('Create successful');
       }
       onClose();
     } catch (err) {
-      console.error(err);
-      alert('저장에 실패했습니다. 다시 시도해주세요.');
+      console.error('Save error detailed:', err);
+      alert('저장에 실패했습니다. 콘솔 에러를 확인해 주세요.');
     } finally {
       setSaving(false);
     }
