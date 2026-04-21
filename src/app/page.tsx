@@ -218,8 +218,16 @@ export default function Home() {
     updateDoc(doc(db, 'blog_todos', id), { done: !done, ...(!done ? { category: '완료' } : {}) }).catch(console.error);
 
   const deletePost = async (id: string) => {
-    if (!confirm('이 글을 삭제할까요?')) return;
-    await deleteDoc(doc(db, 'blog_posts', id)).catch(console.error);
+    console.log('Attempting to delete post:', id);
+    if (!user) { setShowLogin(true); return; }
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    try {
+      await deleteDoc(doc(db, 'blog_posts', id));
+      console.log('Delete success');
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -344,8 +352,18 @@ export default function Home() {
                         >⋮</button>
                         {openMenu === post.id && (
                           <div className="edit-menu" onClick={e => e.stopPropagation()}>
-                            <button className="edit-menu-item" onClick={(e) => { e.stopPropagation(); setEditPost(post); setOpenMenu(null); }}>수정</button>
-                            <button className="edit-menu-item danger" onClick={(e) => { e.stopPropagation(); deletePost(post.id); setOpenMenu(null); }}>삭제</button>
+                            <button className="edit-menu-item" onClick={(e) => {
+                              e.stopPropagation();
+                              console.log('Edit clicked for post:', post.id);
+                              setEditPost(post);
+                              setOpenMenu(null);
+                            }}>수정</button>
+                            <button className="edit-menu-item danger" onClick={(e) => {
+                              e.stopPropagation();
+                              console.log('Delete clicked for post:', post.id);
+                              deletePost(post.id);
+                              setOpenMenu(null);
+                            }}>삭제</button>
                           </div>
                         )}
                       </div>
