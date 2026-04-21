@@ -325,7 +325,7 @@ export default function Home() {
             {filteredPosts.length > 0 ? (
               <div>
                 {filteredPosts.map(post => (
-                  <div key={post.id} className="post-card" onClick={e => e.stopPropagation()}>
+                  <div key={post.id} className="post-card">
                     <div className="post-time-col">
                       <div>{post.time || '—'}</div>
                       <div className="post-status-row"><div className="status-circle done" /></div>
