@@ -1078,21 +1078,21 @@ body {
 .see-all-btn {
   width: 100%;
   margin-top: 10px;
-  padding: 8px;
-  background: none;
-  border: 1.5px dashed var(--border);
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
+  color: var(--text-mid);
+  font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  transition: border-color 0.15s, color 0.15s;
+  transition: all 0.15s;
 }
 
 .see-all-btn:hover {
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--border);
+  color: var(--text-dark);
 }
 
 /* ══ MODALS ══ */
@@ -1596,6 +1596,27 @@ body {
     to {
       transform: translateY(0);
     }
+  }
+
+  .calendar-sheet .calendar-grid {
+    gap: 12px 0;
+  }
+
+  .calendar-sheet .cal-day {
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 10px 0;
+    height: auto;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .calendar-sheet .cal-day.active {
+    background: var(--blue);
+    color: white;
+    border-radius: 50%;
   }
 
   .date-scroller {
