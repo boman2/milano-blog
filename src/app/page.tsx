@@ -469,16 +469,18 @@ export default function Home() {
       {/* Mobile Calendar Modal */}
       {showMobileCal && (
         <div className="calendar-modal" onClick={() => setShowMobileCal(false)}>
-          <div className="sheet-handle" />
-          <button className="sheet-close" onClick={() => setShowMobileCal(false)}>×</button>
-          <div className="calendar-modal-content">
-            <MiniCalendar
-              activeDate={activeDate}
-              onSelectDate={(d) => { setActiveDate(d); setShowMobileCal(false); }}
-              posts={posts}
-            />
-            <div className="calendar-footer">
-              날짜는 접속 지역 시간대에 맞춰 표시됩니다.
+          <div className="calendar-sheet" onClick={e => e.stopPropagation()}>
+            <div className="sheet-handle" />
+            <button className="sheet-close" onClick={() => setShowMobileCal(false)}>×</button>
+            <div className="calendar-modal-content">
+              <MiniCalendar
+                activeDate={activeDate}
+                onSelectDate={(d) => { setActiveDate(d); setShowMobileCal(false); }}
+                posts={posts}
+              />
+              <div className="calendar-footer">
+                날짜는 접속 지역 시간대에 맞춰 표시됩니다.
+              </div>
             </div>
           </div>
         </div>
