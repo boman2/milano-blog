@@ -1599,13 +1599,19 @@ body {
   }
 
   .calendar-sheet .calendar-grid {
-    gap: 12px 0;
+    gap: 10px 0;
+  }
+
+  .calendar-sheet .cal-header h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 20px;
   }
 
   .calendar-sheet .cal-day {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    padding: 10px 0;
+    padding: 8px 0;
     height: auto;
     aspect-ratio: 1;
     display: flex;

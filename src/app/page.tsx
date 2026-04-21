@@ -208,8 +208,8 @@ export default function Home() {
   const titleParts = formatTitle(activeDate);
 
   /* Todo helpers */
-  const activeTodos = todos.filter(t => !t.done);
-  const doneTodos = [...todos.filter(t => t.done)].reverse();
+  const activeTodos = todos.filter(t => t.done !== true);
+  const doneTodos = [...todos.filter(t => t.done === true)].reverse();
   const byCategory = (cat: string) => activeTodos.filter(t => t.category === cat);
   const sorted = (arr: any[]) => [...arr.filter(t => t.priority === '중요'), ...arr.filter(t => t.priority === '보통')];
 
