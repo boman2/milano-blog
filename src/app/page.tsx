@@ -153,6 +153,7 @@ export default function Home() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [showTodoSheet, setShowTodoSheet] = useState(false);
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [showAllDone, setShowAllDone] = useState(false);
   const [showMobileCal, setShowMobileCal] = useState(false);
   const [todoInput, setTodoInput] = useState('');
@@ -189,11 +190,14 @@ export default function Home() {
 
   /* Close dropdown on outside click */
   useEffect(() => {
-    if (!openMenu) return;
-    const handler = () => setOpenMenu(null);
+    if (!openMenu && !showMenuDropdown) return;
+    const handler = () => {
+      setOpenMenu(null);
+      setShowMenuDropdown(false);
+    };
     window.addEventListener('click', handler, true);
     return () => window.removeEventListener('click', handler, true);
-  }, [openMenu]);
+  }, [openMenu, showMenuDropdown]);
 
   const selectDate = (full: string, idx: number) => {
     setActiveDate(full);
@@ -248,7 +252,7 @@ export default function Home() {
       <header className="top-header">
         <div className="header-aurora" />
         <nav className="header-nav">
-          <button className="nav-btn active-nav">다시보기 시청</button>
+          <a href="https://www.weeklycoco.kr" target="_blank" rel="noopener noreferrer" className="nav-btn active-nav">주간코코</a>
           <button className="nav-btn">결과</button>
           <button className="nav-btn">메달</button>
         </nav>
@@ -265,9 +269,53 @@ export default function Home() {
           <button className="icon-btn" title="검색" onClick={() => router.push('/search')} style={{ padding: '8px' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
           </button>
-          <button className="icon-btn" title="메뉴" style={{ padding: '8px' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16M4 6h16M4 18h16" /></svg>
-          </button>
+          <div className="header-menu-container">
+            <button
+              className={`icon-btn${showMenuDropdown ? ' active' : ''}`}
+              title="메뉴"
+              onClick={(e) => { e.stopPropagation(); setShowMenuDropdown(!showMenuDropdown); }}
+              style={{ padding: '8px' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16M4 6h16M4 18h16" /></svg>
+            </button>
+
+            {showMenuDropdown && (
+              <div className="hamburger-dropdown" onClick={e => e.stopPropagation()}>
+                <div className="dropdown-header">
+                  <h3>Menu & Tasks</h3>
+                  <button className="close-dropdown" onClick={() => setShowMenuDropdown(false)}>×</button>
+                </div>
+                <div className="dropdown-content custom-scrollbar">
+                  <TodoPanel
+                    activeTodos={activeTodos}
+                    doneTodos={doneTodos}
+                    todoInput={todoInput}
+                    todoCat={todoCat}
+                    todoPri={todoPri}
+                    showAllDone={showAllDone}
+                    setTodoInput={setTodoInput}
+                    setTodoCat={setTodoCat}
+                    setTodoPri={setTodoPri}
+                    addTodo={addTodo}
+                    toggleTodo={toggleTodo}
+                    setShowAllDone={setShowAllDone}
+                    byCategory={byCategory}
+                    sorted={sorted}
+                  />
+
+                  <div className="dropdown-footer-links">
+                    <div className="footer-label">Navigation</div>
+                    <button className="footer-link-btn" onClick={() => { router.push('/search'); setShowMenuDropdown(false); }}>
+                      <IconSearch /> 검색하기
+                    </button>
+                    <button className="footer-link-btn" onClick={() => { setShowMenuDropdown(false); }}>
+                      <IconBookmark /> 북마크된 글
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

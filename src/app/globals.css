@@ -1736,3 +1736,165 @@ body {
     white-space: nowrap;
   }
 }
+
+/* ── HAMBURGER DROPDOWN ── */
+.header-menu-container {
+  position: relative;
+}
+
+.hamburger-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -12px;
+  width: 320px;
+  max-height: 80vh;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 52, 120, 0.15);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  animation: dropdownSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hamburger-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 24px;
+  width: 12px;
+  height: 12px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+.dropdown-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-header h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--blue);
+  letter-spacing: -0.5px;
+}
+
+.close-dropdown {
+  background: var(--bg);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-dropdown:hover {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.dropdown-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 20px 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.dropdown-footer-links {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--border);
+}
+
+.footer-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.footer-link-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-mid);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.footer-link-btn:hover {
+  background: var(--bg);
+  color: var(--blue);
+}
+
+.footer-link-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
+/* ── REUSE TODO PANEL STYLES FOR DROPDOWN ── */
+.hamburger-dropdown .panel-title {
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.hamburger-dropdown .todo-add-form {
+  background: var(--bg);
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.hamburger-dropdown .todo-input {
+  background: var(--white);
+}
