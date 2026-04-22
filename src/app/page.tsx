@@ -195,8 +195,8 @@ export default function Home() {
       setOpenMenu(null);
       setShowMenuDropdown(false);
     };
-    window.addEventListener('click', handler, true);
-    return () => window.removeEventListener('click', handler, true);
+    window.addEventListener('click', handler);
+    return () => window.removeEventListener('click', handler);
   }, [openMenu, showMenuDropdown]);
 
   const selectDate = (full: string, idx: number) => {
